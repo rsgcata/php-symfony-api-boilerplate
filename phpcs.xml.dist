@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ruleset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="vendor/squizlabs/php_codesniffer/phpcs.xsd">
+
+    <arg name="basepath" value="."/>
+    <arg name="cache" value=".phpcs-cache"/>
+    <arg name="colors"/>
+    <arg name="extensions" value="php"/>
+
+    <rule ref="PSR12"/>
+
+    <rule ref="Generic.Files.LineLength">
+        <properties>
+            <property name="lineLimit" value="100"/>
+            <property name="absoluteLineLimit" value="100"/>
+        </properties>
+    </rule>
+
+    <rule ref="Generic.Metrics.CyclomaticComplexity">
+        <properties>
+            <property name="complexity" value="14"/>
+            <property name="absoluteComplexity" value="14"/>
+        </properties>
+    </rule>
+
+    <rule ref="Generic.PHP.RequireStrictTypes"/>
+
+    <rule ref="Generic.PHP.ForbiddenFunctions"/>
+
+    <rule ref="Generic.PHP.NoSilencedErrors"/>
+
+    <rule ref="Generic.CodeAnalysis.UnusedFunctionParameter"/>
+
+    <rule ref="Generic.CodeAnalysis.AssignmentInCondition"/>
+
+    <rule ref="Generic.PHP.DeprecatedFunctions"/>
+
+    <rule ref="Generic.Files.LineEndings">
+        <properties>
+            <property name="eolChar" value="\n"/>
+        </properties>
+    </rule>
+
+    <file>bin/</file>
+    <file>src/</file>
+    <file>tests/</file>
+
+</ruleset>
