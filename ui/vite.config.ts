@@ -11,5 +11,13 @@ export default defineConfig({
         host: true, // needed for the Docker container port mapping to work
         strictPort: true,
         port: 5173, // you can replace this port with any port
+        proxy: {
+            '/api': {
+                target: 'http://nginx:8080',
+                changeOrigin: true,
+                secure: false,
+                rewrite: (path) => path.replace(/^\/api/, '')
+            }
+        }
     }
 })
