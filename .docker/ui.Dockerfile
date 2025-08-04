@@ -10,7 +10,7 @@ RUN npm install -g vite
 COPY ./ui/package*.json ./
 
 # Install project dependencies
-RUN npm install
+RUN npm ci
 
 # Copy project files
 COPY ./ui .

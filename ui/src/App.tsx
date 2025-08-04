@@ -1,5 +1,9 @@
-import {useEffect, useState} from 'react'
-import './App.css'
+import { useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import './App.css';
+import { LoginPage } from './features/auth';
+import { ROUTES } from './routes';
+import { useAuth } from './features/auth/hooks';
 
 // Define types for our API response
 interface ApiItem {
@@ -13,69 +17,116 @@ interface ApiData {
     items: ApiItem[];
 }
 
-function App() {
-    const [apiData, setApiData] = useState<ApiData | null>(null)
-    const [loading, setLoading] = useState(false)
-    const [error, setError] = useState<string | null>(null)
+// Protected route component
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+    const { isAuthenticated } = useAuth();
+
+    if (!isAuthenticated) {
+        return <Navigate to={ROUTES.LOGIN} replace />;
+    }
+
+    return <>{children}</>;
+};
+
+// Dashboard component (placeholder)
+const Dashboard = () => {
+    return (
+        <div className="p-8">
+            <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
+            <p>Welcome to your dashboard!</p>
+            <ApiDataExample />
+        </div>
+    );
+};
+
+// Original API data example component
+const ApiDataExample = () => {
+    const [apiData, setApiData] = useState<ApiData | null>(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const { logout } = useAuth();
 
     useEffect(() => {
         const fetchData = async () => {
-            setLoading(true)
-            setError(null)
+            setLoading(true);
+            setError(null);
 
             try {
                 // The path needs to be '/api/api/data' because:
                 // 1. The backend endpoint is at '/api/data'
                 // 2. The Vite proxy adds '/api' prefix and then rewrites it
-                const response = await fetch('/api/api/data')
+                const response = await fetch('/api/api/data');
 
                 if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`)
+                    throw new Error(`HTTP error! Status: ${response.status}`);
                 }
 
-                const data = await response.json()
-                setApiData(data)
+                const data = await response.json();
+                setApiData(data);
             } catch (err) {
-                setError(err instanceof Error ? err.message : 'An unknown error occurred')
-                console.error('Error fetching data:', err)
+                setError(err instanceof Error ? err.message : 'An unknown error occurred');
+                console.error('Error fetching data:', err);
             } finally {
-                setLoading(false)
+                setLoading(false);
             }
-        }
+        };
 
-        fetchData()
-    }, [])
+        fetchData();
+    }, []);
 
     return (
-            <div className="App">
-                <h1>API Data Fetch Example</h1>
+        <div className="mt-8">
+            <h2 className="text-xl font-bold mb-4">Data from Backend API</h2>
 
-                <div className="card">
-                    <h2>Data from Backend API</h2>
-                    {loading && <p>Loading data...</p>}
-                    {error && <p>Error: {error}</p>}
-                    {apiData && (
-                            <div>
-                                <p><strong>Message:</strong> {apiData.message}</p>
-                                <p><strong>Timestamp:</strong> {apiData.timestamp}</p>
-                                <h3>Items:</h3>
-                                <ul>
-                                    {apiData.items.map(item => (
-                                            <li key={item.id}>{item.name} (ID: {item.id})</li>
-                                    ))}
-                                </ul>
-                            </div>
-                    )}
-                </div>
+            <button
+                onClick={logout}
+                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mb-4"
+            >
+                Logout
+            </button>
 
-                <div className="info">
-                    <p>This example demonstrates fetching data from a Symfony backend API
-                        endpoint.</p>
-                    <p>The fetch request is made to '/api/api/data' which is proxied to the backend
-                        service.</p>
+            {loading && <p>Loading data...</p>}
+            {error && <p className="text-red-500">Error: {error}</p>}
+            {apiData && (
+                <div className="bg-white p-4 rounded shadow">
+                    <p><strong>Message:</strong> {apiData.message}</p>
+                    <p><strong>Timestamp:</strong> {apiData.timestamp}</p>
+                    <h3 className="font-bold mt-2">Items:</h3>
+                    <ul className="list-disc pl-5">
+                        {apiData.items.map(item => (
+                            <li key={item.id}>{item.name} (ID: {item.id})</li>
+                        ))}
+                    </ul>
                 </div>
+            )}
+
+            <div className="mt-4 text-sm text-gray-600">
+                <p>This example demonstrates fetching data from a Symfony backend API endpoint.</p>
+                <p>The fetch request is made to '/api/api/data' which is proxied to the backend service.</p>
             </div>
-    )
+        </div>
+    );
+};
+
+// Main App component with routing
+function App() {
+    return (
+        <BrowserRouter>
+            <Routes>
+                <Route path={ROUTES.HOME} element={<Navigate to={ROUTES.LOGIN} />} />
+                <Route path={ROUTES.LOGIN} element={<LoginPage />} />
+                <Route
+                    path={ROUTES.DASHBOARD}
+                    element={
+                        <ProtectedRoute>
+                            <Dashboard />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route path="*" element={<Navigate to={ROUTES.LOGIN} />} />
+            </Routes>
+        </BrowserRouter>
+    );
 }
 
-export default App
+export default App;

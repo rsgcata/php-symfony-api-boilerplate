@@ -20,11 +20,20 @@ export default defineConfig({
                 secure: false,
                 rewrite: (path) => path.replace(/^\/api/, '')
             }
+        },
+        fs: {
+            strict: false,
+        },
+        hmr: {
+            overlay: false
         }
     },
     resolve: {
         alias: {
             "@": path.resolve(__dirname, "./src"),
         },
+    },
+    optimizeDeps: {
+        force: true // Forces dependency pre-bundling
     },
 })

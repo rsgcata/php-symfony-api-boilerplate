@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Infrastructure\Exception;
 
 use DomainException;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
@@ -12,6 +13,18 @@ use Throwable;
 
 class ExceptionHandler
 {
+    /**
+     * @var LoggerInterface
+     */
+    private LoggerInterface $logger;
+
+    /**
+     * Constructor.
+     */
+    public function __construct(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
     /**
      * Handle an exception and return an appropriate response.
      */
@@ -30,6 +43,16 @@ class ExceptionHandler
         }
 
         // Handle generic exceptions with a 500 status code
+        // Log the exception details
+        $this->logger->error(
+            'Internal Server Error: {message}',
+            [
+                'message' => $exception->getMessage(),
+                'exception' => $exception,
+                'trace' => $exception->getTraceAsString(),
+            ]
+        );
+
         return $this->createJsonResponse(
             'Internal Server Error',
             Response::HTTP_INTERNAL_SERVER_ERROR

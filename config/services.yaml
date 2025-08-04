@@ -16,5 +16,13 @@ services:
     App\:
         resource: '../src/'
 
+    # Configure the custom stdout logger as the default logger
+    App\Infrastructure\Logging\StdoutLogger:
+        public: true
+
+    # Set the StdoutLogger as the implementation for LoggerInterface
+    Psr\Log\LoggerInterface:
+        alias: App\Infrastructure\Logging\StdoutLogger
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
