@@ -1,4 +1,20 @@
 services:
+    # UI Service - React with Vite
+    ui:
+        build:
+            context: ..
+            dockerfile: .docker/ui.Dockerfile
+        container_name: ${UI_CONTAINER_NAME:-app_ui}
+        restart: unless-stopped
+        tty: true
+        ports:
+            - "${UI_PORT:-5173}:5173"
+        volumes:
+            - ../ui:/app
+            - /app/node_modules
+        networks:
+            - app-network
+
     # PHP Service
     php:
         build:

@@ -16,7 +16,8 @@ symfony-boilerplate/
 │   ├── .env.example    # Example environment variables
 │   ├── docker-compose.yml # Docker Compose configuration
 │   ├── nginx.conf      # Nginx server configuration
-│   └── phpfpm.Dockerfile # PHP-FPM image configuration
+│   ├── phpfpm.Dockerfile # PHP-FPM image configuration
+│   └── ui.Dockerfile   # React UI image configuration
 ├── bin/                # Command-line tools
 │   ├── console         # Symfony console
 │   └── phpunit         # PHPUnit test runner
@@ -28,6 +29,10 @@ symfony-boilerplate/
 │   ├── Infrastructure/ # Infrastructure layer
 │   └── Presentation/   # Presentation layer
 ├── tests/              # Test files
+├── ui/                 # React UI application
+│   ├── src/            # React source code
+│   ├── package.json    # NPM dependencies
+│   └── vite.config.js  # Vite configuration
 ├── composer.json       # Composer dependencies
 └── phpunit.dist.xml    # PHPUnit configuration
 ```
@@ -96,10 +101,11 @@ docker exec app_php bin/phpunit
 
 ## Docker Services
 
-The Docker setup includes three main services:
+The Docker setup includes four main services:
 
 - **PHP-FPM** (app_php): PHP 8.4 with FPM
 - **Nginx** (app_nginx): Web server, accessible at http://localhost:8080
+- **UI** (app_ui): React UI with Vite, accessible at http://localhost:5173. The container will continue running even if the dev server fails to start, allowing you to connect to it for debugging.
 - **PostgreSQL** (database): Database server, accessible at localhost:5432
 
 ## Configuration
@@ -118,6 +124,7 @@ The Docker environment variables are defined in the `.docker/.env` file. You can
 
 - PHP version and container name
 - Nginx ports
+- UI container name and port
 - PostgreSQL configuration
 
 ## Stopping the Environment
