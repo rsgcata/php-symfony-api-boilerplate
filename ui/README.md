@@ -9,6 +9,41 @@ Currently, two official plugins are available:
 - [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc)
   uses [SWC](https://swc.rs/) for Fast Refresh
 
+## Project Structure
+
+The `src` directory is organized as follows:
+
+```
+src/
+├── assets/            # Static assets like images and SVGs
+├── features/          # Feature-based modules
+│   ├── auth/          # Authentication feature
+│   │   ├── components # UI elements scoped to auth
+│   │   ├── pages      # auth-related pages/routes
+│   │   ├── hooks.ts   # React hooks for auth functionality
+│   │   ├── index.ts   # Public API exports for the auth feature
+│   │   ├── model.ts   # Types, interfaces, and constants for auth
+│   │   └── services.ts # API services and data fetching for auth
+│   └── dashboard/     # Dashboard feature (similar structure)
+├── shared/            # Shared utilities and components
+│   └── components/    # Truly reusable components
+│   └── lib/           # Utility libraries
+│       └── utils.ts   # Common utility functions
+│   └── styles/        # Global styles or theme
+├── App.css            # Main application styles
+├── App.tsx            # Main application component
+├── index.css          # Global styles
+├── main.tsx           # Application entry point
+├── routes.ts          # Centralized route configuration
+└── vite-env.d.ts      # TypeScript declarations for Vite
+```
+
+### Key Files
+
+- **main.tsx**: Application entry point that renders the App component
+- **App.tsx**: Main component that demonstrates API data fetching
+- **routes.ts**: Centralized route configuration (placeholder)
+
 ## Expanding the ESLint configuration
 
 If you are developing a production application, we recommend updating the configuration to enable
